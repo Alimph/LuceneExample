@@ -27,8 +27,8 @@ namespace LuceneExample.Services
                 var doc = new Document
                 {
                     new StringField("Id", product.Id.ToString(), Field.Store.YES),
-                    new TextField("Title", product.Title, Field.Store.YES),
-                    new StringField("TaxRate", product.TaxRate.ToString(), Field.Store.YES),
+                    new TextField("Name", product.Name, Field.Store.YES),
+                    new StringField("Description", product.Description, Field.Store.YES),
                 };
                 writer.AddDocument(doc);
             }
