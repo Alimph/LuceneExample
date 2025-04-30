@@ -12,14 +12,14 @@ namespace LuceneExample.Services
     public class LuceneIndexService
     {
         private static readonly string LuceneIndexDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "LuceneIndex");
-        private static readonly LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
+        private static readonly LuceneVersion _appLuceneVersion = LuceneVersion.LUCENE_48;
 
         public void BuildIndex(IEnumerable<Product> products)
         {
             var directory = FSDirectory.Open(LuceneIndexDirectory);
 
-            using var analyzer = new StandardAnalyzer(AppLuceneVersion);
-            var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
+            using var analyzer = new StandardAnalyzer(_appLuceneVersion);
+            var indexConfig = new IndexWriterConfig(_appLuceneVersion, analyzer);
             using var writer = new IndexWriter(directory, indexConfig);
 
             foreach (var product in products)
@@ -42,8 +42,8 @@ namespace LuceneExample.Services
             using var reader = DirectoryReader.Open(directory);
             var searcher = new IndexSearcher(reader);
 
-            using var analyzer = new StandardAnalyzer(AppLuceneVersion);
-            var parser = new MultiFieldQueryParser(AppLuceneVersion, new[] { "Name", "Description" }, analyzer);
+            using var analyzer = new StandardAnalyzer(_appLuceneVersion);
+            var parser = new MultiFieldQueryParser(_appLuceneVersion, new[] { "Name", "Description" }, analyzer);
 
             var query = parser.Parse(searchText);
             var hits = searcher.Search(query, 10).ScoreDocs;
