@@ -16,7 +16,7 @@
         // Rebuild the Lucene index
         public void RebuildIndex()
         {
-            var products = _dbContext.TaxProduct.ToList();
+            var products = _dbContext.Products.ToList();
             _indexService.BuildIndex(products);
         }
 
@@ -24,7 +24,7 @@
         public List<Product> SearchProducts(string searchText)
         {
             var productIds = _searchService.SearchProducts(searchText);
-            return _dbContext.TaxProduct.Where(p => productIds.Contains(p.Id)).ToList();
+            return _dbContext.Products.Where(p => productIds.Contains(p.Id)).ToList();
         }
     }
 }
