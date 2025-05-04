@@ -32,7 +32,6 @@ namespace LuceneExample.Services
                 };
                 writer.AddDocument(doc);
             }
-
             writer.Flush(triggerMerge: false, applyAllDeletes: false);
         }
 
@@ -49,6 +48,44 @@ namespace LuceneExample.Services
             var hits = searcher.Search(query, 10).ScoreDocs;
 
             return hits.Select(hit => int.Parse(searcher.Doc(hit.Doc).Get("Id"))).ToList();
+        }
+
+        public bool IsProductIndexed(string indexPath, Guid productId)
+        {
+            using var directory = FSDirectory.Open(indexPath);
+            using var reader = DirectoryReader.Open(directory);
+            var searcher = new IndexSearcher(reader);
+
+            var query = new TermQuery(new Term("Id", productId.ToString()));
+            var hits = searcher.Search(query, 1).ScoreDocs;
+
+            return hits.Length > 0; // Returns true if the product is indexed
+        }
+
+        public async Task UpdateIndexAsync(string indexPath, Product updatedProduct)
+        {
+            using var directory = FSDirectory.Open(indexPath);
+            var analyzer = new StandardAnalyzer(_appLuceneVersion);
+            using var indexWriter = new IndexWriter(directory, new IndexWriterConfig(_appLuceneVersion, analyzer));
+
+            // Check if the product is already indexed
+            if (IsProductIndexed(indexPath, updatedProduct.Id))
+            {
+                // Delete the old document
+                indexWriter.DeleteDocuments(new Term("Id", updatedProduct.Id.ToString()));
+            }
+
+            // Create a new document for the updated product
+            var doc = new Document
+            {
+                new StringField("Id", updatedProduct.Id.ToString(), Field.Store.YES),
+                new TextField("Name", updatedProduct.Name, Field.Store.YES),
+                new TextField("Description", updatedProduct.Description, Field.Store.YES)
+            };
+
+            // Add the new document to the index
+            indexWriter.AddDocument(doc);
+            indexWriter.Commit();
         }
     }
 }
