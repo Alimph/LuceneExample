@@ -11,12 +11,12 @@ namespace LuceneExample.Services
 {
     public class LuceneIndexService
     {
-        private static readonly string LuceneIndexDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "LuceneIndex");
+        private static readonly string _luceneIndexDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "LuceneIndex");
         private static readonly LuceneVersion _appLuceneVersion = LuceneVersion.LUCENE_48;
 
         public void BuildIndex(IEnumerable<Product> products)
         {
-            var directory = FSDirectory.Open(LuceneIndexDirectory);
+            var directory = FSDirectory.Open(_luceneIndexDirectory);
 
             using var analyzer = new StandardAnalyzer(_appLuceneVersion);
             var indexConfig = new IndexWriterConfig(_appLuceneVersion, analyzer);
@@ -37,7 +37,7 @@ namespace LuceneExample.Services
 
         public List<int> SearchProducts(string searchText)
         {
-            var directory = FSDirectory.Open(LuceneIndexDirectory);
+            var directory = FSDirectory.Open(_luceneIndexDirectory);
             using var reader = DirectoryReader.Open(directory);
             var searcher = new IndexSearcher(reader);
 
@@ -86,6 +86,11 @@ namespace LuceneExample.Services
             // Add the new document to the index
             indexWriter.AddDocument(doc);
             indexWriter.Commit();
+        }
+
+        public bool HasIndexFile()
+        {
+            return System.IO.Directory.Exists(_luceneIndexDirectory);
         }
     }
 }
