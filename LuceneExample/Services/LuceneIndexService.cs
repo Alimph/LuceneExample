@@ -91,7 +91,7 @@ namespace LuceneExample.Services
             indexWriter.Commit();
         }
 
-        public bool HasIndexFile()
+        bool HasIndexFile()
         {
             return System.IO.Directory.Exists(_luceneIndexDirectory);
         }
