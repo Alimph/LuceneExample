@@ -6,6 +6,6 @@ public class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=.;Database=Lucene_Db;Trusted_Connection=True;");
+        optionsBuilder.UseSqlServer("Server=.;Database=Lucene_Db;Integrated Security=True; TrustServerCertificate=True");
     }
 }
