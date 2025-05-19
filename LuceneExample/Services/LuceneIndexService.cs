@@ -14,8 +14,11 @@ namespace LuceneExample.Services
         private static readonly string _luceneIndexDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(), "LuceneIndex");
         private static readonly LuceneVersion _appLuceneVersion = LuceneVersion.LUCENE_48;
 
-        public void BuildIndex(IEnumerable<Product> products)
+        public void BuildIndexIfNotExists(IEnumerable<Product> products)
         {
+            if(HasIndexFile())
+                return; // Index already exists
+
             var directory = FSDirectory.Open(_luceneIndexDirectory);
 
             using var analyzer = new StandardAnalyzer(_appLuceneVersion);
