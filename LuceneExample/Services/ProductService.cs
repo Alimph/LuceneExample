@@ -21,9 +21,9 @@
         }
 
         // Search for products
-        public List<Product> SearchProducts(string searchText)
+        public List<Product> SearchProducts(string searchText, int count)
         {
-            var productIds = _searchService.SearchProducts(searchText);
+            var productIds = _searchService.SearchProducts(searchText, count);
             return _dbContext.Products.Where(p => productIds.Contains(p.Id)).ToList();
         }
     }
