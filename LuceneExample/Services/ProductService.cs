@@ -17,7 +17,7 @@
         public void RebuildIndex()
         {
             var products = _dbContext.Products.ToList();
-            _indexService.BuildIndex(products);
+            _indexService.BuildIndexIfNotExists(products);
         }
 
         // Search for products
